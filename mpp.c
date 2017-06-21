@@ -6,17 +6,16 @@
 #include "mpp.h"
 
 FILE *fp;
-FILE *cmovie;          //DM color movie file pointer
+FILE *cmovie;          
 
 int main(int argc, char **argv)
 {
-  struct vortex *vortex;      //DM declare a linked list pointer 
-                              //which will contain particles
-  int nV;                     //DM Declare number of variables integer
-  struct syssize syssize;     //DM declare the system size struct
-  int time,maxtime;           //DM time = running clock time of system
-  double dt;                  //DM timestep to integrate over
-  int writemovietime;         //DM integer that sends counts when to write frame
+  struct vortex *vortex;      //DM a linked list of particles
+  int nV;                     //DM Declare number of variables
+  struct syssize syssize;     //DM all system dimensions (size)
+  int time,maxtime;           //DM time = molecular dynamics step
+  double dt;                  //DM timestep to integrate (x = v dt)
+  int writemovietime;         //DM we don't write every MD step, 
   double period;
 
   int movie_type = CMOVIE;    //DM hardwire for now
@@ -80,8 +79,11 @@ void read_frame(struct vortex *vortex, int *nV, int time, double dt,
 
   //float delta_t = writemovietime*dt;
 
-  fread(&check_nV,  sizeof(int),1,cmovie); //get number particles and check
-  fread(&check_time,sizeof(int),1,cmovie); //get time and check
+  //get number particles, should check this is what we expect
+  fread(&check_nV,  sizeof(int),1,cmovie); 
+
+  //get time, should check this is what we expect
+  fread(&check_time,sizeof(int),1,cmovie); 
 
   //update number of vortices
   (*nV) = check_nV;
@@ -94,9 +96,7 @@ void read_frame(struct vortex *vortex, int *nV, int time, double dt,
 	if(check_time){
 	  vortex[i].x_old = vortex[i].x;
 	  vortex[i].y_old = vortex[i].y;
-
 	}
-
 
 
 	//read in the 'color' only if cmovie
@@ -108,6 +108,7 @@ void read_frame(struct vortex *vortex, int *nV, int time, double dt,
 	  vortex[i].color=1; 
 	}
 
+	//get the new data
 	fread(&(vortex[i].id),    sizeof(int),  1,cmovie); //all movies
 	fread(&(vortex[i].x),     sizeof(float),1,cmovie); //all movies
 	fread(&(vortex[i].y),     sizeof(float),1,cmovie); //all movies
@@ -131,7 +132,6 @@ void read_frame(struct vortex *vortex, int *nV, int time, double dt,
 	}
 	*/
 
-
   }
 
 
@@ -140,6 +140,8 @@ void read_frame(struct vortex *vortex, int *nV, int time, double dt,
 }
 
 //-----------------------------------------------------------------
+//this is NOT used in this analysis
+//----------------------------------------------------------------
 void write_ascii_frame(struct vortex *vortex,int nV,int time,
 		       struct syssize syssize)
 {
@@ -254,11 +256,10 @@ void get_parameters_file(int *maxnum,struct syssize *syssize,double *radius,
 
   double kspring; //not used
 
-
-
-  //following are 1 if file exists, and 0 otherwise
+  //There are multiple parameter files (Pa0, etc) in the codebase
   int read_Pa0 = doesFileExist("input_files/Pa0");
-  
+
+  //here are two other possibilities, comment out for now
   //int read_Pa0r = doesFileExist("Pa0r");
   //int read_generic = doesFileExist("generic_Px0");
 
@@ -271,7 +272,7 @@ void get_parameters_file(int *maxnum,struct syssize *syssize,double *radius,
     printf("\n reading in input_files/Pa0\n");
   }
   else{
-    printf("What parameter files (Pa0) are you using?\n");
+    printf("What parameter files (input_files/Pa0) are you using?\n");
     exit(-1);  //no file found, game over
   }
 
@@ -307,6 +308,7 @@ void get_parameters_file(int *maxnum,struct syssize *syssize,double *radius,
     }
     printf("radius is: %lf\n",*radius);
 
+    //calculate the number of particles
     *maxnum=*density*(*syssize).SX*(*syssize).SY/(0.5*TWOPI*(*radius)*(*radius));
     //intialized on grid, so we don't get maxnum:
     int n_rows = (int) sqrt(*maxnum);
@@ -316,6 +318,7 @@ void get_parameters_file(int *maxnum,struct syssize *syssize,double *radius,
 
     printf("maxnum is: %d\n",*maxnum);
 
+    //active matter parameter
     if ( (fscanf(in,"%s %d\n",trash,runtime)) != 2){
       printf("Couldn't load runtime!\n");
       exit(-1);
@@ -323,18 +326,21 @@ void get_parameters_file(int *maxnum,struct syssize *syssize,double *radius,
 
     printf("runtime is: %d\n",*runtime);
 
+    //active matter parameter
     if ( (fscanf(in,"%s %lf\n",trash,runforce)) != 2){
       printf("Couldn't load runforce!\n");
       exit(-1);
     }
     printf("runforce is: %lf\n",*runforce);
 
+    //timestep
     if ( (fscanf(in,"%s %lf\n",trash,dt)) != 2){
       printf("Couldn't load dt!\n");
       exit(-1);
     }
     printf("dt is: %lf\n",*dt);
 
+    //maximum simulation time, measured in MD steps
     if ( (fscanf(in,"%s %d\n",trash,maxtime)) != 2){
       printf("Couldn't load maxtime!\n");
       exit(-1);
@@ -342,19 +348,24 @@ void get_parameters_file(int *maxnum,struct syssize *syssize,double *radius,
 
     printf("maxtime is: %d\n",*maxtime);
 
+    //time to print out particle positions.  the smaller this is,
+    //the larger the smtest file
     if ( (fscanf(in,"%s %d\n",trash,writemovietime)) != 2){
-      printf("Couldn't load number of vortices or time 9!\n");
+      printf("Couldn't load writemovietime!\n");
       exit(-1);
     }
 
     printf("writemovietime is: %d\n",*writemovietime);
 
+    //strength of short-range particle interaction
     if ( (fscanf(in,"%s %lf\n",trash,&kspring)) != 2){
-      printf("Couldn't load number of vortices or time 10!\n");
+      printf("Couldn't load kspring!\n");
       exit(-1);
     }
+
+    //cellsize for neighbor algorithm.
     if ( (fscanf(in,"%s %lf\n",trash,&cellsize)) != 2){
-      printf("Couldn't load number of vortices or time 11!\n");
+      printf("Couldn't load cellsize!\n");
       exit(-1);
     }
     // size of lookup cell
