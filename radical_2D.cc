@@ -49,7 +49,13 @@ void analyze_voro(struct vortex *vortex,int *nV,int time,
 		      true,true,false,        //pbc in x/y
 		      16);                    //number particles/block
   
-  //loop through vortex struct adding particles
+  /*get data alternative:
+   * import() if you have a plain text file containing
+   *id x y z radius
+   */
+  //conp.import("poly_output_voro");
+
+  //for smtest loop through vortex struct adding particles
   for(i=0;i<(*nV);i++){
 
     x=vortex[i].x;
@@ -62,21 +68,19 @@ void analyze_voro(struct vortex *vortex,int *nV,int time,
     else{
       radius = 0.5;
     }
-    
+
+    //add the individual particle to the container
     conp.put(i,x,y,z,radius);
-    //printf("%d %f %f %f\n", i, x,y,radius);
+
   }
 
-  //conp.import("poly_output_voro");             //get the data
 
-  /*
-    conp.draw_cells_gnuplot("poly.gnu");         //do the tessellation  
-    conp.draw_cells_pov("poly_v.pov");
-    conp.draw_particles_pov("poly_p.pov");
-  */
-	
-
-
+  /*Output the tessellation data for plotting*/
+  
+  //  conp.draw_cells_gnuplot("poly.gnu");   //gnuplot
+  //  conp.draw_cells_pov("poly_v.pov");     //pov ray
+  //  conp.draw_particles_pov("poly_p.pov");
+  
   //array for storing voronoi stats
   double pN[4];
   
@@ -113,23 +117,17 @@ void analyze_voro(struct vortex *vortex,int *nV,int time,
 
       } while (cl.inc());
 
-  
+
+  //divide by the total number of particles
   for(i=0;i<4;i++){
     pN[i]  /= (float)normalize;
   }
 
+  //print the normalized values to the output file
   fprintf(fp,"%f  %f  %f  %f \n", pN[0], pN[1], pN[2], pN[3]);
   fflush(fp);
 
 
-
-  //printf("done? norm = %d ", normalize);
-  //clear the data structure
-  //conp.clear();
-
-  //printf("done!\n");
-
-  //exit(0);
   return;
 }
 /*--------------------------------------------------------------------*/

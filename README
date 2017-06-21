@@ -31,10 +31,12 @@ TO USE:
 
 (5) The code is currently hardwired to assume the binary movie file "smtest"
     is in the local directory.
-    
-(6) The WILL not run without input_files/Pa0
+    You may of course update this.
+
+(6) Likewise, this WILL not run without "input_files/Pa0"
     a version may be found on github.
-    This may also be fixed.
+    You may of course update this.
+
 
 Assuming everything compiles...
 
