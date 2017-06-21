@@ -1,0 +1,13 @@
+//Author Danielle McDermott
+//Modified from Voro++ example programs radical.cc and polygons.cc
+//http://math.lbl.gov/voro++/examples/radical/
+//http://math.lbl.gov/voro++/examples/polygons/
+
+This code will loop through a binary file names "smtest" which contains 2D particle positions and type, sending each frame to the voro++ container class for analysis using periodic boundary conditions and the radical tessellation.
+
+It is currently hardwired for certain particles types
+type=1, radius=0.7
+type=2, radius=0.5
+
+The code will determine the overall voronoi statistics for the frame.
+It may also be useful to do a by radius (type) analysis, since it is clear from the example data that larger particles tend to have seven-sided voronoi cells while the smaller particles tend to have 5-sided cells.
