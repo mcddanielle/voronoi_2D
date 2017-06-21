@@ -14,7 +14,7 @@ EXECUTABLES=radical_2D
 all: $(EXECUTABLES)
 
 radical_2D: radical_2D.cc
-	$(CXX) $(CFLAGS) $(E_INC) $(E_LIB) -o radical_2D radical_2D.cc -lvoro++
+	$(CXX) $(CFLAGS) $(E_INC) $(E_LIB) -o radical_2D radical_2D.cc mpp.c -lvoro++
 
 clean:
 	rm -f $(EXECUTABLES)

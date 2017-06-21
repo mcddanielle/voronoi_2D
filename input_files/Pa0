@@ -1,0 +1,12 @@
+density 0.780000
+SX 60.000000
+SY 60.000000
+radius 0.500000
+runtime 0
+runforce 0.0
+dt 0.002000
+maxtime 5000000
+writemovietime 400
+kspring 50.000000
+lookupcellsize 2.500000
+
