@@ -3,6 +3,13 @@
 //http://math.lbl.gov/voro++/examples/radical/
 //http://math.lbl.gov/voro++/examples/polygons/
 
+NOTE: if you do not have an "smtest" file of your own,		
+      then you probably don't need the complications of mpp.c
+      which tailored for that simulation data.
+      a much shorter, more readable example is:
+
+      support_codes/basic_radical_2D.cc
+      
 TO USE:
 (1) Compile and install voro++ (see link below),
     http://math.lbl.gov/voro++/download/
