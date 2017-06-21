@@ -3,11 +3,46 @@
 //http://math.lbl.gov/voro++/examples/radical/
 //http://math.lbl.gov/voro++/examples/polygons/
 
-This code will loop through a binary file names "smtest" which contains 2D particle positions and type, sending each frame to the voro++ container class for analysis using periodic boundary conditions and the radical tessellation.
+TO USE:
+(1) Compile and install voro++ (see link below),
+    http://math.lbl.gov/voro++/download/
+    
+    this compiled code will live in the directory of your choice, for example
+    
+    $HOME/analysis_codes/voro++/	     
+
+(2) Create a new subdirectory in the examples subdirectory:
+
+    $HOME/analysis_codes/voro++/examples/voronoi_2D
+
+(3) Download all source code (mpp.c, mpp.h, radical_2D.cc) and the Makefile
+
+(4) The current Makefile is primitive, basically I stapled on mpp.c
+    to a perfectly good Makefile written by Chris Rycroft.
+    However, you should be able to run "make" in the command line	     
+    and produce the executable "radical_2D"
+
+(5) The code is currently hardwired to assume the binary movie file "smtest"
+    is in the local directory.
+    
+(6) The WILL not run without input_files/Pa0
+    a version may be found on github.
+    This may also be fixed.
+
+Assuming everything compiles...
+
+This code will loop through a binary file names "smtest"
+which contains 2D particle positions and type,
+sending each frame to the voro++ container class
+for analysis using periodic boundary conditions and the radical tessellation.
 
 It is currently hardwired for certain particles types
 type=1, radius=0.7
 type=2, radius=0.5
 
 The code will determine the overall voronoi statistics for the frame.
-It may also be useful to do a by radius (type) analysis, since it is clear from the example data that larger particles tend to have seven-sided voronoi cells while the smaller particles tend to have 5-sided cells.
+
+It may also be useful to do a by radius (type) analysis,
+since it is clear from the example data that larger particles
+tend to have seven-sided voronoi cells while
+the smaller particles tend to have 5-sided cells.
