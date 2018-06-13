@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   //analyze the data for number of voronoi faces
   //---------------------------------------------------
   //open a file
-  if((fp = fopen("output_files/voro_stats.txt","wa"))==NULL)
+  if((fp = fopen("voro_stats.txt","wa"))==NULL)
     {printf("Cannot open file.\n");
       exit(1);
     }
@@ -223,8 +223,8 @@ void initialize(int *nV,struct vortex **vortex,struct syssize *syssize,
   int get_data_smAtest0 = 0;
 
   if(get_data_smtest){
-    cmovie=fopen("input_files/smtest","rb");
-    printf("\nReading from binary file input_files/smtest\n");
+    cmovie=fopen("smtest","rb");
+    printf("\nReading from binary file smtest\n");
   }
   else if(get_data_smAtest0){
     cmovie=fopen("smAtest0","rb");
